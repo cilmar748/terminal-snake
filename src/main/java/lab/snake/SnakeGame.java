@@ -23,17 +23,19 @@ public class SnakeGame {
     public void reset() {
         snake.clear(); snake.addAll(scenario.snake);
         direction = scenario.direction; food = scenario.food;
-        status = Status.RUNNING; random = new Random(3383);
+        status = Status.RUNNING; random = new Random(3383); score = 0;
     }
     public void tick(Direction requested) {
         if (status != Status.RUNNING) return;
         if (!direction.opposite(requested)) direction = requested;
         Cell next = snake.getFirst().move(direction);
-        if (next.x() < 0 || next.y() < 0 || next.y() >= height) {
+        if (next.x() < 0 || next.y() < 0 || next.x() >= width || next.y() >= height) {
             status = Status.WALL; return;
         }
         boolean growing = next.equals(food);
-        if (snake.contains(next)) { status = Status.SELF; return; }
+        Cell tail = snake.getLast();
+        boolean self = snake.contains(next) && !(next.equals(tail) && !growing);
+        if (self) { status = Status.SELF; return; }
         snake.addFirst(next);
         if (growing) { score += 10; placeFood(); }
         else snake.removeLast();

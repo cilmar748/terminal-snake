@@ -30,4 +30,17 @@ class SnakeGameTest {
         SnakeGame g=new SnakeGame(Scenario.NORMAL);g.tick(Direction.RIGHT);g.reset();
         assertEquals(Scenario.NORMAL.snake,g.body());assertEquals(Scenario.NORMAL.food,g.food());assertEquals(SnakeGame.Status.RUNNING,g.status());
     }
+    @Test void loopMoveIntoOldTailCellIsLegal() {
+        SnakeGame g=new SnakeGame(Scenario.LOOP);g.tick(Direction.LEFT);
+        assertEquals(SnakeGame.Status.RUNNING,g.status());assertEquals(new Cell(1,2),g.head());assertEquals(4,g.body().size());
+    }
+    @Test void rightWallEndsRound() {
+        SnakeGame g=new SnakeGame(Scenario.WALL);
+        g.tick(Direction.RIGHT);g.tick(Direction.RIGHT);
+        assertEquals(SnakeGame.Status.WALL,g.status());assertEquals(new Cell(7,2),g.head());
+    }
+    @Test void restartResetsScoreToZero() {
+        SnakeGame g=new SnakeGame(Scenario.PICNIC);g.tick(Direction.RIGHT);assertEquals(10,g.score());g.reset();
+        assertEquals(0,g.score());
+    }
 }
